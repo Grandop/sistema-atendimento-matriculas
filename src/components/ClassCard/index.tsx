@@ -3,7 +3,6 @@ import * as S from "./styles";
 interface ClassCardProps {
   discipline: string;
   professor: string;
-  students: string;
   schedule: string;
   isEnrolled: boolean;
   onEnroll: () => void;
@@ -12,7 +11,6 @@ interface ClassCardProps {
 export const ClassCard = ({
   discipline,
   professor,
-  students,
   schedule,
   isEnrolled,
   onEnroll,
@@ -21,7 +19,6 @@ export const ClassCard = ({
     <S.Card>
       <S.Title>{discipline}</S.Title>
       <S.Info>Professor: {professor}</S.Info>
-      <S.Info>Alunos: {students}</S.Info>
       <S.Info>Horário/Período: {schedule}</S.Info>
       <S.EnrollButton
         onClick={!isEnrolled ? onEnroll : undefined}

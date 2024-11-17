@@ -4,35 +4,40 @@ import { OfferCard } from "../../components/OfferCard";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../../components/Modal";
 import { useTeacherOffersQuery } from "../../services/institutional/GetOffers/useGetOffers";
+import { useCreateOfferMutate } from "../../services/institutional/CreateOffer/useCreateOffer";
 
 export const InstitutionalView = () => {
   const navigate = useNavigate();
-  const { data: offersTeacher } = useTeacherOffersQuery();
+  const { mutate: createOffer } = useCreateOfferMutate();
+  const { data: offersTeacher, refetch } = useTeacherOffersQuery();
   const [isModalOpen, setModalOpen] = useState(false);
   const [newOffer, setNewOffer] = useState({
     title: "",
     teacher: "",
     schedule: "",
   });
-  const [offers, setOffers] = useState([
-    { id: 1, title: "Matemática", teacher: "João", schedule: "21" },
-    { id: 2, title: "História", teacher: "Maria", schedule: "33" },
-  ]);
 
   const handleNewOffer = () => {
     setModalOpen(true);
   };
 
   const handleSaveOffer = () => {
-    setOffers((prevOffers) => [
-      ...prevOffers,
-      { id: offers.length + 1, ...newOffer },
-    ]);
-    setNewOffer({ title: "", teacher: "", schedule: "" });
-    setModalOpen(false);
+    const offerData = {
+      nomeTurma: newOffer.title,
+      nomeProf: newOffer.teacher,
+      turno: newOffer.schedule,
+    };
+    createOffer(offerData, {
+      onSuccess: () => {
+        refetch();
+        setNewOffer({ title: "", teacher: "", schedule: "" });
+        setModalOpen(false);
+      },
+      onError: (error) => {
+        console.error("Erro ao criar oferta:", error);
+      },
+    });
   };
-
-  console.log("offersTeacher", offersTeacher);
 
   return (
     <S.Container>
@@ -41,12 +46,12 @@ export const InstitutionalView = () => {
         Criar Nova Oferta
       </S.NewOfferButton>
       <div>
-        {offers.map((offer) => (
+        {offersTeacher?.map((offer) => (
           <OfferCard
             key={offer.id}
-            title={offer.title}
-            teacher={offer.teacher}
-            schedule={offer.schedule}
+            title={offer.nomeTurma}
+            teacher={offer.nomeProf}
+            schedule={offer.turno}
           />
         ))}
       </div>

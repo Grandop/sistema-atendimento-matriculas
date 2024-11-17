@@ -1,10 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosPromise } from "axios";
+import { GetOffersResponse } from "./types";
 
-const getOffers = async (): AxiosPromise<void> => {
+const getOffers = async (): AxiosPromise<GetOffersResponse[]> => {
   const baseUrl = "http://localhost:3000/api";
 
-  const response = await axios.get<void>(`${baseUrl}/institucional/ofertas`);
+  const response = await axios.get<GetOffersResponse[]>(
+    `${baseUrl}/institucional/ofertas`
+  );
   return response;
 };
 

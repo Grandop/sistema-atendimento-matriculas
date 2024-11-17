@@ -1,42 +1,27 @@
-import { useState } from "react";
 import * as S from "./styles";
 import { ClassCard } from "../../components/ClassCard";
 import { useNavigate } from "react-router-dom";
 import { useStudentOffersQuery } from "../../services/student/GetOffers/useGetOffers";
+import { useStudentEnrollMutate } from "../../services/student/Enroll/useEnroll";
 
 export const StudentView = () => {
   const navigate = useNavigate();
-  const { data: studentOffers } = useStudentOffersQuery();
-  const [classes, setClasses] = useState([
-    {
-      id: 1,
-      title: "Matemática",
-      teacher: "João",
-      schedule: "21",
-      students: 10,
-      isEnrolled: false,
-    },
-    {
-      id: 2,
-      title: "História",
-      teacher: "Maria",
-      schedule: "33",
-      students: 5,
-      isEnrolled: false,
-    },
-  ]);
+  const { data: studentOffers, refetch } = useStudentOffersQuery();
+  const { mutate: enrollMutate } = useStudentEnrollMutate();
+  // const [classes, setClasses] = useState(studentOffers || []);
 
   const handleEnroll = (id: number) => {
-    setClasses((prevClasses) =>
-      prevClasses.map((classData) =>
-        classData.id === id
-          ? {
-              ...classData,
-              students: classData.students + 1,
-              isEnrolled: true,
-            }
-          : classData
-      )
+    enrollMutate(
+      { idTurma: id.toString() },
+      {
+        onSuccess: () => {
+          console.log("sucesso!");
+          refetch();
+        },
+        onError: (error) => {
+          console.error("Erro ao matricular:", error);
+        },
+      }
     );
   };
 
@@ -46,13 +31,12 @@ export const StudentView = () => {
     <S.Container>
       <S.Title>Turmas Disponíveis para Matrícula</S.Title>
       <div>
-        {classes.map((classData) => (
+        {studentOffers?.map((classData) => (
           <ClassCard
             key={classData.id}
-            discipline={classData.title}
-            professor={classData.teacher}
-            students={`${classData.students} alunos`}
-            schedule={classData.schedule}
+            discipline={classData.nomeTurma}
+            professor={classData.nomeProf}
+            schedule={classData.turno}
             isEnrolled={classData.isEnrolled}
             onEnroll={() => handleEnroll(classData.id)}
           />
