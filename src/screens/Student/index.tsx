@@ -2,9 +2,11 @@ import { useState } from "react";
 import * as S from "./styles";
 import { ClassCard } from "../../components/ClassCard";
 import { useNavigate } from "react-router-dom";
+import { useStudentOffersQuery } from "../../services/student/GetOffers/useGetOffers";
 
 export const StudentView = () => {
   const navigate = useNavigate();
+  const { data: studentOffers } = useStudentOffersQuery();
   const [classes, setClasses] = useState([
     {
       id: 1,
@@ -37,6 +39,8 @@ export const StudentView = () => {
       )
     );
   };
+
+  console.log("studentOffers", studentOffers);
 
   return (
     <S.Container>

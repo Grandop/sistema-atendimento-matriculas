@@ -1,12 +1,17 @@
 import { RouterProvider } from "react-router-dom";
 import { GlobalStyles } from "./global";
 import { router } from "./routes/routes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
     <>
-      <RouterProvider router={router} />
-      <GlobalStyles />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <GlobalStyles />
+      </QueryClientProvider>
     </>
   );
 }

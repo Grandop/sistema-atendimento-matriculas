@@ -3,9 +3,11 @@ import * as S from "./styles";
 import { OfferCard } from "../../components/OfferCard";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../../components/Modal";
+import { useTeacherOffersQuery } from "../../services/institutional/GetOffers/useGetOffers";
 
 export const InstitutionalView = () => {
   const navigate = useNavigate();
+  const { data: offersTeacher } = useTeacherOffersQuery();
   const [isModalOpen, setModalOpen] = useState(false);
   const [newOffer, setNewOffer] = useState({
     title: "",
@@ -29,6 +31,8 @@ export const InstitutionalView = () => {
     setNewOffer({ title: "", teacher: "", schedule: "" });
     setModalOpen(false);
   };
+
+  console.log("offersTeacher", offersTeacher);
 
   return (
     <S.Container>
